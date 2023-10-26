@@ -119,6 +119,7 @@ if (isset($_GET['delete'])) {
             <div class="list-group list-group-flush">
                 <a href="profile.php" class="list-group-item list-group-item-action "><span data-feather="user"></span> Profile</a>
                 <a href="logout.php" class="list-group-item list-group-item-action "><span data-feather="power"></span> Logout</a>
+                <a href="report.php" class="list-group-item list-group-item-action"><span data-feather="file-text"></span> Generate Report</a>
             </div>
         </div>
         <!-- /#sidebar-wrapper -->

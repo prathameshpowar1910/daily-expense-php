@@ -69,8 +69,8 @@ include("session.php");
                                 <img class="img img-fluid rounded-circle" src="<?php echo $userprofile ?>" width="25">
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Your Profile</a>
-                                <a class="dropdown-item" href="#">Edit Profile</a>
+                                <a class="dropdown-item" href="profile.php">Your Profile</a>
+                                <a class="dropdown-item" href="profile.php">Edit Profile</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="logout.php">Logout</a>
                             </div>
@@ -78,7 +78,22 @@ include("session.php");
                     </ul>
                 </div>
             </nav>
-
+            <div class="col-md" style="margin:0 auto;">
+                        <form action="" method="POST">
+                            <div class="form-group row">
+                                <label for="expenseamount" class="col-sm-6 col-form-label"><b>Enter Amount(₹)</b></label>
+                                <div class="col-md-6">
+                                    <input type="number" min="0" class="form-control col-sm-12" value="<?php echo $expenseamount; ?>" id="expenseamount" name="expenseamount" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="expensedate" class="col-sm-6 col-form-label"><b>Date</b></label>
+                                <div class="col-md-6">
+                                    <input type="date" class="form-control col-sm-12" value="<?php echo $expensedate; ?>" name="expensedate" id="expensedate" required>
+                                </div>
+                            </div>
+                        </form>
+                </div>
             </div>
         </div>
     </div>
