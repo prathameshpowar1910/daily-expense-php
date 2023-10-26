@@ -30,20 +30,6 @@ if (isset($_POST['update'])) {
     header('location: manage_expense.php');
 }
 
-if (isset($_POST['update'])) {
-    $id = $_GET['edit'];
-    $expenseamount = $_POST['expenseamount'];
-    $expensedate = $_POST['expensedate'];
-    $expensecategory = $_POST['expensecategory'];
-
-    $sql = "UPDATE expenses SET expense='$expenseamount', expensedate='$expensedate', expensecategory='$expensecategory' WHERE user_id='$userid' AND expense_id='$id'";
-    if (mysqli_query($con, $sql)) {
-        echo "Records were updated successfully.";
-    } else {
-        echo "ERROR: Could not able to execute $sql. " . mysqli_error($con);
-    }
-    header('location: manage_expense.php');
-}
 
 if (isset($_POST['delete'])) {
     $id = $_GET['delete'];
@@ -173,9 +159,9 @@ if (isset($_GET['delete'])) {
                     <div class="col-md" style="margin:0 auto;">
                         <form action="" method="POST">
                             <div class="form-group row">
-                                <label for="expenseamount" class="col-sm-6 col-form-label"><b>Enter Amount($)</b></label>
+                                <label for="expenseamount" class="col-sm-6 col-form-label"><b>Enter Amount(₹)</b></label>
                                 <div class="col-md-6">
-                                    <input type="number" class="form-control col-sm-12" value="<?php echo $expenseamount; ?>" id="expenseamount" name="expenseamount" required>
+                                    <input type="number" min="0" class="form-control col-sm-12" value="<?php echo $expenseamount; ?>" id="expenseamount" name="expenseamount" required>
                                 </div>
                             </div>
                             <div class="form-group row">
