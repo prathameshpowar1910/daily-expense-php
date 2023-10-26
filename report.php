@@ -1,6 +1,6 @@
 <?php
 include("session.php");
-$exp_fetched = mysqli_query($con, "SELECT * FROM expenses WHERE user_id = '$userid'");
+// $exp_fetched = mysqli_query($con, "SELECT * FROM expenses WHERE user_id = '$userid'");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,17 +36,17 @@ $exp_fetched = mysqli_query($con, "SELECT * FROM expenses WHERE user_id = '$user
                 <h5><?php echo $username ?></h5>
                 <p><?php echo $useremail ?></p>
             </div>
-            <div class="sidebar-heading">Management</div>
+            <div class="sidebar-heading"><span data-feather="briefcase"></span>&nbsp;&nbsp;&nbsp;Management</div>
             <div class="list-group list-group-flush">
                 <a href="index.php" class="list-group-item list-group-item-action"><span data-feather="home"></span> Dashboard</a>
                 <a href="add_expense.php" class="list-group-item list-group-item-action "><span data-feather="plus-square"></span> Add Expenses</a>
-                <a href="manage_expense.php" class="list-group-item list-group-item-action sidebar-active"><span data-feather="dollar-sign"></span> Manage Expenses</a>
+                <a href="manage_expense.php" class="list-group-item list-group-item-action "><span data-feather="dollar-sign"></span> Manage Expenses</a>
             </div>
-            <div class="sidebar-heading">Settings </div>
+            <div class="sidebar-heading"><span data-feather="settings"></span>&nbsp;&nbsp;&nbsp;Settings</div>
             <div class="list-group list-group-flush">
                 <a href="profile.php" class="list-group-item list-group-item-action "><span data-feather="user"></span> Profile</a>
                 <a href="logout.php" class="list-group-item list-group-item-action "><span data-feather="power"></span> Logout</a>
-                <a href="report.php" class="list-group-item list-group-item-action "><span data-feather="file-text"></span> Generate Report</a>
+                <a href="report.php" class="list-group-item list-group-item-action sidebar-active"><span data-feather="file-text"></span> Generate Report</a>
             </div>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -79,43 +79,6 @@ $exp_fetched = mysqli_query($con, "SELECT * FROM expenses WHERE user_id = '$user
                 </div>
             </nav>
 
-            <div class="container-fluid">
-                <h3 class="mt-4 text-center">Manage Expenses</h3>
-                <hr>
-                <div class="row justify-content-center">
-
-                    <div class="col-md-6">
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr class="text-center">
-                                    <th>#</th>
-                                    <th>Date</th>
-                                    <th>Amount</th>
-                                    <th>Expense Category</th>
-                                    <th colspan="2">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <?php $count=1; while ($row = mysqli_fetch_array($exp_fetched)) { ?>
-                                <tr>
-                                    <td><?php echo $count;?></td>
-                                    <td><?php echo $row['expensedate']; ?></td>
-                                    <td><?php echo '₹'.$row['expense']; ?></td>
-                                    <td><?php echo $row['expensecategory']; ?></td>
-                                    <td class="text-center">
-                                        <a href="add_expense.php?edit=<?php echo $row['expense_id']; ?>" class="btn btn-primary btn-sm" style="border-radius:0%;">Edit</a>
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="add_expense.php?delete=<?php echo $row['expense_id']; ?>" class="btn btn-danger btn-sm" style="border-radius:0%;">Delete</a>
-                                    </td>
-                                </tr>
-                            <?php $count++; } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                </div>
-                
             </div>
         </div>
     </div>
