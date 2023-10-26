@@ -37,15 +37,17 @@ if (isset($_REQUEST['firstname'])) {
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Register</title>
+  <title>Regsister</title>
 
   <!-- Bootstrap core CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+
     body {
       color: #000;
       background: #fff;
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Poppins', sans-serif;
     }
 
     .form-control {
@@ -179,12 +181,9 @@ if (isset($_REQUEST['firstname'])) {
     <div class="text-center">Already have an account? <a class="text-success" href="login.php">Login Here</a></div>
   </div>
 </body>
-<!-- Bootstrap core JavaScript -->
 <script src="js/jquery.slim.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<!-- Croppie -->
 <script src="js/profile-picture.js"></script>
-<!-- Menu Toggle Script -->
 <script>
   $("#menu-toggle").click(function(e) {
     e.preventDefault();
