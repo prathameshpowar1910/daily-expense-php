@@ -1,5 +1,22 @@
 <?php
 include("session.php");
+
+$startdate = date("Y-m-d");
+$enddate = date("Y-m-d");
+
+
+if (isset($_POST['add'])) {
+    $startdate = $_POST['startdate'];
+    $enddate = $_POST['enddate'];
+    echo $startdate;
+    echo $enddate;
+    $exp_category_dc = mysqli_query($con, "SELECT expensecategory FROM expenses WHERE user_id = '$userid' and expensedate >= '$enddate' and expensedate <= '$startdate' GROUP BY expensecategory");
+$exp_amt_dc = mysqli_query($con, "SELECT SUM(expense) FROM expenses WHERE user_id = '$userid' and expensedate >= '$enddate' and expensedate <= '$startdate'  GROUP BY expensecategory");
+
+$exp_date_line = mysqli_query($con, "SELECT expensedate FROM expenses WHERE user_id = '$userid' and expensedate >= '$enddate' and expensedate <= '$startdate' GROUP BY expensedate");
+$exp_amt_line = mysqli_query($con, "SELECT SUM(expense) FROM expenses WHERE user_id = '$userid' and expensedate >= '$startdate' and expensedate <= '$enddate'  GROUP BY expensedate");
+}
+
 // $exp_fetched = mysqli_query($con, "SELECT * FROM expenses WHERE user_id = '$userid'");
 ?>
 <!DOCTYPE html>
@@ -22,7 +39,7 @@ include("session.php");
 
     <!-- Feather JS for Icons -->
     <script src="js/feather.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
@@ -80,20 +97,52 @@ include("session.php");
             </nav>
             <div class="col-md" style="margin:0 auto;">
                         <form action="" method="POST">
-                            <div class="form-group row">
-                                <label for="expenseamount" class="col-sm-6 col-form-label"><b>Enter Amount(₹)</b></label>
+                        <div class="form-group row">
+                                <label for="startdate" class="col-sm-6 col-form-label"><b>Date</b></label>
                                 <div class="col-md-6">
-                                    <input type="number" min="0" class="form-control col-sm-12" value="<?php echo $expenseamount; ?>" id="expenseamount" name="expenseamount" required>
+                                    <input type="date" class="form-control col-sm-12" value="<?php echo $startdate; ?>" name="startdate" id="startdate" required>
+                                </div>
+                                </div>
+                            <div class="form-group row">
+                                <label for="enddate" class="col-sm-6 col-form-label"><b>Date</b></label>
+                                <div class="col-md-6">
+                                    <input type="date" class="form-control col-sm-12" value="<?php echo $enddate; ?>" name="enddate" id="enddate" required>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="expensedate" class="col-sm-6 col-form-label"><b>Date</b></label>
-                                <div class="col-md-6">
-                                    <input type="date" class="form-control col-sm-12" value="<?php echo $expensedate; ?>" name="expensedate" id="expensedate" required>
+                                <div class="col-md-12 text-right">
+                                    <button type="submit" name="add" class="btn btn-lg btn-block btn-success" style="border-radius: 0%;">Generate Report</button>
                                 </div>
                             </div>
                         </form>
                 </div>
+                <!-- <div class="pdf-container">
+                <canvas id="myChart" width="350px" height="100px"></canvas>-->
+                <!-- </div> -->
+                <h3 class="mt-4">Full-Expense Report</h3>
+        <div class="row">
+          <div class="col-md">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title text-center">Yearly Expenses</h5>
+              </div>
+              <div class="card-body">
+                <canvas id="expense_line" height="150"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title text-center">Expense Category</h5>
+              </div>
+              <div class="card-body">
+                <canvas id="expense_category_pie" height="150"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+                <button id="download-button">Download PDF</button>
             </div>
         </div>
     </div>
@@ -106,7 +155,7 @@ include("session.php");
     <script src="js/jquery.slim.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/Chart.min.js"></script>
-    <!-- Menu Toggle Script -->
+   
     <script>
         $("#menu-toggle").click(function(e) {
             e.preventDefault();
@@ -116,7 +165,113 @@ include("session.php");
     <script>
         feather.replace()
     </script>
+ <script>
+//         function addScript(url) {
+//      var script = document.createElement('script');
+//      script.type = 'application/javascript';
+//      script.src = url;
+//      document.head.appendChild(script);
+//  }
+//  addScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
+        // Sample data for the chart
+    var ctx = document.getElementById('expense_category_pie').getContext('2d');
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: [<?php while ($a = mysqli_fetch_array($exp_category_dc)) {
+                    echo '"' . $a['expensecategory'] . '",';
+                  } ?>],
+        datasets: [{
+          label: 'Expense by Category',
+          data: [<?php while ($b = mysqli_fetch_array($exp_amt_dc)) {
+                    echo '"' . $b['SUM(expense)'] . '",';
+                  } ?>],
+          backgroundColor: [
+            '#6f42c1',
+            '#dc3545',
+            '#28a745',
+            '#007bff',
+            '#ffc107',
+            '#20c997',
+            '#17a2b8',
+            '#fd7e14',
+            '#e83e8c',
+            '#6610f2'
+          ],
+          borderWidth: 1
+        }]
+      }
+    });
 
+    var line = document.getElementById('expense_line').getContext('2d');
+    var myChart = new Chart(line, {
+      type: 'line',
+      data: {
+        labels: [<?php while ($c = mysqli_fetch_array($exp_date_line)) {
+                    echo '"' . $c['expensedate'] . '",';
+                  } ?>],
+        datasets: [{
+          label: 'Expense by Month (Whole Year)',
+          data: [<?php while ($d = mysqli_fetch_array($exp_amt_line)) {
+                    echo '"' . $d['SUM(expense)'] . '",';
+                  } ?>],
+          borderColor: [
+            '#adb5bd'
+          ],
+          backgroundColor: [
+            '#6f42c1',
+            '#dc3545',
+            '#28a745',
+            '#007bff',
+            '#ffc107',
+            '#20c997',
+            '#17a2b8',
+            '#fd7e14',
+            '#e83e8c',
+            '#6610f2'
+          ],
+          fill: false,
+          borderWidth: 2
+        }]
+      }
+    });
+        
+//         var downloadButton = document.getElementById('download-button');
+// downloadButton.addEventListener('click', function () {
+//     // Log to check if the button click event is being triggered
+    
+//     // Check if html2pdf is defined
+//     if (typeof html2pdf !== 'undefined') {
+//         console.log("Button clicked");
+//         // Select the PDF container to be converted
+//         const pdfContainer = document.querySelector('.pdf-container');
+//            const canvas = pdfContainer.querySelector('canvas');
+//         if (canvas) {
+//             canvas.willReadFrequently = true;
+//         }
+//         // Options for the PDF generation
+//         const options = {
+//             margin: 10,
+//             filename: 'chart_with_table.pdf',
+//             image: { type: 'jpeg', quality: 0.98 },
+//             html2canvas: { scale: 2 },
+//             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+//         };
+
+//         // Use html2pdf to generate the PDF
+//         html2pdf().from(pdfContainer).set(options).outputPdf(function (pdf) {
+//             // Save or open the PDF as needed
+//             const blob = new Blob([pdf], { type: 'application/pdf' });
+//             const a = document.createElement('a');
+//             a.href = URL.createObjectURL(blob);
+//             a.download = 'chart_with_table.pdf';
+//             a.click();
+//         });
+//     } else {
+//         console.error('html2pdf.js is not loaded.');
+//     }
+// });
+    </script>
 </body>
 
 </html>
